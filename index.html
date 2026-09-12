@@ -1,0 +1,1735 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>OSINT // BUSINESS HUNTER</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+    theme: {
+        extend: {
+            fontFamily: {
+                mono: ['"Courier New"', 'monospace']
+            },
+            boxShadow: {
+                cyber: '0 0 25px rgba(34,197,94,.12)',
+                green: '0 0 18px rgba(34,197,94,.25)'
+            }
+        }
+    }
+}
+</script>
+
+<style>
+
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #14532d #020604;
+}
+
+body {
+    background:
+        radial-gradient(circle at 20% 10%, rgba(22,101,52,.10), transparent 30%),
+        radial-gradient(circle at 80% 70%, rgba(34,197,94,.05), transparent 30%),
+        #020604;
+    color: #86efac;
+    font-family: "Courier New", monospace;
+}
+
+/* CRT scanlines */
+
+body::before {
+    content: "";
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background:
+        repeating-linear-gradient(
+            to bottom,
+            rgba(255,255,255,.015) 0px,
+            rgba(255,255,255,.015) 1px,
+            transparent 1px,
+            transparent 4px
+        );
+}
+
+/* subtle glow */
+
+.glow {
+    text-shadow:
+        0 0 5px rgba(74,222,128,.6),
+        0 0 15px rgba(34,197,94,.25);
+}
+
+.panel {
+    background: rgba(2,12,7,.88);
+    border: 1px solid rgba(34,197,94,.25);
+    box-shadow:
+        inset 0 0 20px rgba(34,197,94,.025),
+        0 0 20px rgba(34,197,94,.04);
+}
+
+.panel:hover {
+    border-color: rgba(74,222,128,.42);
+}
+
+.cyber-input {
+    background: #020805;
+    border: 1px solid #14532d;
+    color: #bbf7d0;
+    outline: none;
+}
+
+.cyber-input:focus {
+    border-color: #22c55e;
+    box-shadow: 0 0 12px rgba(34,197,94,.15);
+}
+
+.cyber-btn {
+    border: 1px solid #166534;
+    background: #03140a;
+    transition: .15s;
+}
+
+.cyber-btn:hover {
+    background: #064e26;
+    border-color: #4ade80;
+    box-shadow: 0 0 15px rgba(34,197,94,.18);
+}
+
+.cyber-btn.active {
+    background: #14532d;
+    border-color: #4ade80;
+    color: white;
+}
+
+.command {
+    background: #010402;
+    border-left: 2px solid #22c55e;
+}
+
+.tag {
+    border: 1px solid #166534;
+    background: rgba(20,83,45,.18);
+}
+
+.cursor {
+    display: inline-block;
+    width: 8px;
+    height: 16px;
+    background: #4ade80;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+.progress-bar {
+    transition: width .4s;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #22c55e;
+}
+
+.modal {
+    backdrop-filter: blur(8px);
+}
+
+</style>
+</head>
+
+<body class="min-h-screen">
+
+<!-- HEADER -->
+
+<header class="border-b border-green-900/50 sticky top-0 z-50 bg-[#020604]/95 backdrop-blur">
+
+<div class="max-w-[1600px] mx-auto px-4 py-3">
+
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+
+<div class="flex items-center gap-3">
+
+<div class="w-10 h-10 border border-green-500 flex items-center justify-center">
+    <span class="text-xl">◉</span>
+</div>
+
+<div>
+    <div class="text-xl font-bold glow tracking-widest">
+        OSINT<span class="text-green-500">//</span>HUNTER
+    </div>
+    <div class="text-[10px] text-green-700 tracking-[.25em]">
+        BUSINESS OPPORTUNITY INTELLIGENCE SYSTEM
+    </div>
+</div>
+
+</div>
+
+<div class="flex items-center gap-4 text-xs">
+
+<div class="flex items-center gap-2">
+    <span class="status-dot"></span>
+    <span>SYSTEM ONLINE</span>
+</div>
+
+<div class="hidden md:block text-green-800">
+    NODE: PUBLIC-WEB
+</div>
+
+<div id="clock" class="text-green-500"></div>
+
+</div>
+
+</div>
+
+</div>
+
+</header>
+
+
+<main class="max-w-[1600px] mx-auto p-4">
+
+<!-- COMMAND HEADER -->
+
+<section class="panel p-5 mb-4">
+
+<div class="flex flex-col xl:flex-row gap-5">
+
+<div class="flex-1">
+
+<div class="text-xs text-green-700 mb-2">
+    ROOT@OSINT-HUNTER:~$ DEFINE TARGET
+</div>
+
+<h1 class="text-2xl md:text-3xl font-bold glow">
+    FIND BUSINESS OPPORTUNITIES
+</h1>
+
+<p class="text-xs text-green-700 mt-2">
+    Generate advanced public-web intelligence queries from your business requirement.
+</p>
+
+</div>
+
+<div class="xl:w-[430px]">
+
+<div class="text-[10px] text-green-700 mb-1">
+    SYSTEM STATUS
+</div>
+
+<div class="border border-green-900 p-3 text-xs">
+
+<div class="flex justify-between">
+    <span>QUERY ENGINE</span>
+    <span class="text-green-400">READY</span>
+</div>
+
+<div class="flex justify-between mt-1">
+    <span>OPERATORS</span>
+    <span id="operatorCount">18</span>
+</div>
+
+<div class="flex justify-between mt-1">
+    <span>SEARCH PROFILES</span>
+    <span>10</span>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- MAIN GRID -->
+
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-4">
+
+<!-- LEFT CONTROL PANEL -->
+
+<aside class="xl:col-span-4 space-y-4">
+
+<!-- TARGET -->
+
+<div class="panel p-4">
+
+<div class="flex justify-between mb-4">
+
+<div>
+<span class="text-xs text-green-700">01 //</span>
+<span class="font-bold">TARGET PROFILE</span>
+</div>
+
+<span class="text-[10px] text-green-800">
+CONFIG
+</span>
+
+</div>
+
+
+<label class="text-xs text-green-700">
+WHAT ARE YOU LOOKING FOR?
+</label>
+
+<textarea
+id="requirement"
+rows="4"
+class="cyber-input w-full p-3 mt-2 text-sm"
+placeholder="Example:
+Find Indian companies looking for WebRTC developers
+Find export buyers for playground equipment
+Find LPG gas tenders in West Bengal
+Find companies needing video conferencing software"
+></textarea>
+
+
+<div class="mt-4">
+
+<label class="text-xs text-green-700">
+OPPORTUNITY TYPE
+</label>
+
+<select id="opportunityType"
+class="cyber-input w-full p-3 mt-2">
+
+<option value="general">General Business Opportunity</option>
+<option value="clients">Potential Clients</option>
+<option value="tenders">Government / Private Tenders</option>
+<option value="rfq">RFQ / RFP / Procurement</option>
+<option value="export">Export Buyers</option>
+<option value="importers">Importers</option>
+<option value="distributors">Distributor / Dealer</option>
+<option value="suppliers">Suppliers / Manufacturers</option>
+<option value="contracts">Contracts / Projects</option>
+<option value="startups">Startups / New Companies</option>
+<option value="freelance">Freelance / Contract Work</option>
+<option value="partnership">Partnership Opportunities</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<!-- SEARCH DEPTH -->
+
+<div class="panel p-4">
+
+<div class="text-xs text-green-700 mb-3">
+02 // SEARCH DEPTH
+</div>
+
+<div class="grid grid-cols-3 gap-2">
+
+<button
+class="cyber-btn active p-3 text-xs depth-btn"
+data-depth="normal">
+NORMAL
+</button>
+
+<button
+class="cyber-btn p-3 text-xs depth-btn"
+data-depth="deep">
+DEEP
+</button>
+
+<button
+class="cyber-btn p-3 text-xs depth-btn"
+data-depth="maximum">
+MAX
+</button>
+
+</div>
+
+<div class="mt-3 text-[10px] text-green-800" id="depthDescription">
+Normal search generates focused public-web queries.
+</div>
+
+</div>
+
+
+<!-- LOCATION -->
+
+<div class="panel p-4">
+
+<div class="text-xs text-green-700 mb-3">
+03 // GEOGRAPHIC TARGET
+</div>
+
+<label class="text-xs text-green-700">
+COUNTRY
+</label>
+
+<select id="country" class="cyber-input w-full p-2 mt-1">
+
+<option value="">Worldwide</option>
+<option value="India">India</option>
+<option value="United States">United States</option>
+<option value="United Kingdom">United Kingdom</option>
+<option value="UAE">UAE</option>
+<option value="Saudi Arabia">Saudi Arabia</option>
+<option value="Qatar">Qatar</option>
+<option value="Singapore">Singapore</option>
+<option value="Australia">Australia</option>
+<option value="Germany">Germany</option>
+<option value="Canada">Canada</option>
+<option value="Malaysia">Malaysia</option>
+<option value="Bangladesh">Bangladesh</option>
+
+</select>
+
+
+<label class="text-xs text-green-700 block mt-3">
+CITY / REGION
+</label>
+
+<input
+id="region"
+class="cyber-input w-full p-2 mt-1"
+placeholder="Kolkata / West Bengal / Dubai"
+/>
+
+</div>
+
+
+<!-- TIME FILTER -->
+
+<div class="panel p-4">
+
+<div class="text-xs text-green-700 mb-3">
+04 // TIME INTELLIGENCE
+</div>
+
+<div class="grid grid-cols-2 gap-2">
+
+<button class="cyber-btn active time-btn p-2 text-xs" data-time="any">
+ALL TIME
+</button>
+
+<button class="cyber-btn time-btn p-2 text-xs" data-time="recent">
+RECENT
+</button>
+
+<button class="cyber-btn time-btn p-2 text-xs" data-time="7">
+LAST 7 DAYS
+</button>
+
+<button class="cyber-btn time-btn p-2 text-xs" data-time="30">
+LAST 30 DAYS
+</button>
+
+<button class="cyber-btn time-btn p-2 text-xs" data-time="90">
+LAST 90 DAYS
+</button>
+
+<button class="cyber-btn time-btn p-2 text-xs" data-time="custom">
+CUSTOM DATE
+</button>
+
+</div>
+
+
+<div id="customDates" class="hidden mt-3 grid grid-cols-2 gap-2">
+
+<div>
+<label class="text-[10px]">FROM</label>
+<input id="dateFrom" type="date"
+class="cyber-input w-full p-2 text-xs">
+</div>
+
+<div>
+<label class="text-[10px]">TO</label>
+<input id="dateTo" type="date"
+class="cyber-input w-full p-2 text-xs">
+</div>
+
+</div>
+
+</div>
+
+
+<!-- DOMAIN TARGET -->
+
+<div class="panel p-4">
+
+<div class="text-xs text-green-700 mb-3">
+05 // DOMAIN INTELLIGENCE
+</div>
+
+<label class="text-xs text-green-700">
+TARGET DOMAINS
+</label>
+
+<div class="flex gap-2 mt-2">
+
+<input
+id="domains"
+class="cyber-input flex-1 p-2 text-xs"
+placeholder="gov.in, nic.in, linkedin.com"
+/>
+
+</div>
+
+<div class="flex flex-wrap gap-2 mt-3">
+
+<button class="tag px-2 py-1 text-[10px] domain-preset"
+data-domain="gov.in">
+GOV.IN
+</button>
+
+<button class="tag px-2 py-1 text-[10px] domain-preset"
+data-domain="nic.in">
+NIC.IN
+</button>
+
+<button class="tag px-2 py-1 text-[10px] domain-preset"
+data-domain="linkedin.com">
+LINKEDIN
+</button>
+
+<button class="tag px-2 py-1 text-[10px] domain-preset"
+data-domain="startupindia.gov.in">
+STARTUP INDIA
+</button>
+
+<button class="tag px-2 py-1 text-[10px] domain-preset"
+data-domain="gem.gov.in">
+GEM
+</button>
+
+</div>
+
+</div>
+
+
+<!-- EXCLUDE -->
+
+<div class="panel p-4">
+
+<div class="text-xs text-green-700 mb-3">
+06 // NOISE FILTER
+</div>
+
+<input
+id="exclude"
+class="cyber-input w-full p-2 text-xs"
+placeholder="jobs -course -tutorial -youtube"
+/>
+
+</div>
+
+
+<button
+id="generateBtn"
+class="w-full border border-green-400 bg-green-950/40 hover:bg-green-800/50 p-4 font-bold tracking-widest text-green-300 hover:text-white transition">
+
+[ GENERATE INTELLIGENCE QUERIES ]
+
+</button>
+
+</aside>
+
+
+<!-- RIGHT RESULTS -->
+
+<section class="xl:col-span-8">
+
+<!-- TERMINAL -->
+
+<div class="panel mb-4">
+
+<div class="border-b border-green-900 p-3 flex justify-between">
+
+<div class="text-xs">
+    TERMINAL // QUERY GENERATOR
+</div>
+
+<div class="text-[10px] text-green-700">
+    PUBLIC WEB ONLY
+</div>
+
+</div>
+
+<div
+id="terminal"
+class="h-36 overflow-y-auto p-4 text-xs leading-6 text-green-500">
+
+<div>
+<span class="text-green-800">[SYSTEM]</span>
+OSINT engine initialized...
+</div>
+
+<div>
+<span class="text-green-800">[SYSTEM]</span>
+Waiting for target profile...
+</div>
+
+<div>
+<span class="text-green-800">[INFO]</span>
+Use the control panel to generate search intelligence.
+</div>
+
+</div>
+
+</div>
+
+
+<!-- RESULT TOOLBAR -->
+
+<div class="panel p-3 mb-4">
+
+<div class="flex flex-col md:flex-row gap-3 justify-between">
+
+<div class="flex gap-2">
+
+<button
+id="copyAll"
+class="cyber-btn px-4 py-2 text-xs">
+COPY ALL
+</button>
+
+<button
+id="downloadTxt"
+class="cyber-btn px-4 py-2 text-xs">
+EXPORT TXT
+</button>
+
+<button
+id="clearResults"
+class="cyber-btn px-4 py-2 text-xs">
+CLEAR
+</button>
+
+</div>
+
+<div class="text-xs">
+
+<span class="text-green-800">
+GENERATED:
+</span>
+
+<span id="resultCount" class="text-green-300">
+0
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- COMMAND RESULTS -->
+
+<div id="results" class="space-y-3">
+
+<div class="panel p-10 text-center">
+
+<div class="text-4xl mb-3 opacity-30">
+⌕
+</div>
+
+<div class="text-sm text-green-700">
+NO INTELLIGENCE QUERIES GENERATED
+</div>
+
+<div class="text-[10px] text-green-900 mt-2">
+DEFINE A TARGET TO BEGIN
+</div>
+
+</div>
+
+</div>
+
+
+<!-- OPPORTUNITY MATRIX -->
+
+<div class="panel mt-4">
+
+<div class="p-3 border-b border-green-900 text-xs">
+INTELLIGENCE MATRIX
+</div>
+
+<div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-green-950">
+
+<div class="bg-[#020604] p-4">
+<div class="text-2xl font-bold" id="statQueries">0</div>
+<div class="text-[10px] text-green-800">QUERIES</div>
+</div>
+
+<div class="bg-[#020604] p-4">
+<div class="text-2xl font-bold" id="statOperators">0</div>
+<div class="text-[10px] text-green-800">OPERATORS</div>
+</div>
+
+<div class="bg-[#020604] p-4">
+<div class="text-2xl font-bold" id="statEngines">4</div>
+<div class="text-[10px] text-green-800">ENGINES</div>
+</div>
+
+<div class="bg-[#020604] p-4">
+<div class="text-2xl font-bold" id="statDepth">NORMAL</div>
+<div class="text-[10px] text-green-800">DEPTH</div>
+</div>
+
+</div>
+
+</div>
+
+
+<!-- QUICK PROFILES -->
+
+<div class="panel mt-4">
+
+<div class="p-3 border-b border-green-900 text-xs">
+QUICK INTELLIGENCE PROFILES
+</div>
+
+<div class="p-3 grid grid-cols-2 md:grid-cols-3 gap-2">
+
+<button class="profile cyber-btn p-3 text-left text-xs"
+data-profile="webdev">
+<span class="text-green-500">01</span>
+<br>
+WEB DEVELOPMENT CLIENTS
+</button>
+
+<button class="profile cyber-btn p-3 text-left text-xs"
+data-profile="webrtc">
+<span class="text-green-500">02</span>
+<br>
+WEBRTC / RTC CLIENTS
+</button>
+
+<button class="profile cyber-btn p-3 text-left text-xs"
+data-profile="tender">
+<span class="text-green-500">03</span>
+<br>
+GOVERNMENT TENDERS
+</button>
+
+<button class="profile cyber-btn p-3 text-left text-xs"
+data-profile="export">
+<span class="text-green-500">04</span>
+<br>
+EXPORT BUYERS
+</button>
+
+<button class="profile cyber-btn p-3 text-left text-xs"
+data-profile="distributor">
+<span class="text-green-500">05</span>
+<br>
+DISTRIBUTORS
+</button>
+
+<button class="profile cyber-btn p-3 text-left text-xs"
+data-profile="startup">
+<span class="text-green-500">06</span>
+<br>
+NEW STARTUPS
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+</main>
+
+
+<!-- FOOTER -->
+
+<footer class="max-w-[1600px] mx-auto px-4 py-8">
+
+<div class="border-t border-green-900 pt-4 flex flex-col md:flex-row justify-between gap-2 text-[10px] text-green-900">
+
+<div>
+OSINT//HUNTER v1.0
+</div>
+
+<div>
+PUBLIC INFORMATION DISCOVERY SYSTEM
+</div>
+
+<div>
+NO PRIVATE / RESTRICTED DATA ACCESS
+</div>
+
+</div>
+
+</footer>
+
+
+<script>
+
+/* =========================================================
+   OSINT BUSINESS HUNTER
+========================================================= */
+
+const state = {
+
+    depth: "normal",
+    time: "any",
+    queries: []
+
+};
+
+
+/* ---------------------------------------------------------
+   CLOCK
+--------------------------------------------------------- */
+
+function updateClock() {
+
+    const now = new Date();
+
+    document.getElementById("clock").textContent =
+        now.toLocaleString("en-IN", {
+            hour12: false
+        });
+
+}
+
+setInterval(updateClock, 1000);
+updateClock();
+
+
+/* ---------------------------------------------------------
+   DEPTH
+--------------------------------------------------------- */
+
+const depthDescription = {
+
+    normal:
+        "Focused public-web discovery with high-relevance queries.",
+
+    deep:
+        "Adds procurement, business-intent, document and platform-specific operators.",
+
+    maximum:
+        "Maximum query expansion using multiple public-web discovery patterns."
+
+};
+
+
+document.querySelectorAll(".depth-btn").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        document.querySelectorAll(".depth-btn")
+            .forEach(x => x.classList.remove("active"));
+
+        btn.classList.add("active");
+
+        state.depth = btn.dataset.depth;
+
+        document.getElementById("depthDescription")
+            .textContent = depthDescription[state.depth];
+
+        document.getElementById("statDepth")
+            .textContent = state.depth.toUpperCase();
+
+    });
+
+});
+
+
+/* ---------------------------------------------------------
+   TIME
+--------------------------------------------------------- */
+
+document.querySelectorAll(".time-btn").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        document.querySelectorAll(".time-btn")
+            .forEach(x => x.classList.remove("active"));
+
+        btn.classList.add("active");
+
+        state.time = btn.dataset.time;
+
+        document.getElementById("customDates")
+            .classList.toggle(
+                "hidden",
+                state.time !== "custom"
+            );
+
+    });
+
+});
+
+
+/* ---------------------------------------------------------
+   DOMAIN PRESETS
+--------------------------------------------------------- */
+
+document.querySelectorAll(".domain-preset").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        const input = document.getElementById("domains");
+
+        const domain = btn.dataset.domain;
+
+        let current = input.value
+            .split(",")
+            .map(x => x.trim())
+            .filter(Boolean);
+
+        if (!current.includes(domain)) {
+
+            current.push(domain);
+
+        }
+
+        input.value = current.join(", ");
+
+    });
+
+});
+
+
+/* ---------------------------------------------------------
+   PROFILES
+--------------------------------------------------------- */
+
+const profiles = {
+
+webdev: {
+    requirement:
+        "Find companies looking for web development services, website development, web application development or outsourced developers",
+    type: "clients"
+},
+
+webrtc: {
+    requirement:
+        "Find companies needing WebRTC, video calling, live streaming, video conferencing, real-time communication or SFU development",
+    type: "clients"
+},
+
+tender: {
+    requirement:
+        "Find recently published government and private tenders, RFPs and procurement opportunities",
+    type: "tenders"
+},
+
+export: {
+    requirement:
+        "Find international buyers, importers, distributors and procurement companies looking for Indian products",
+    type: "export"
+},
+
+distributor: {
+    requirement:
+        "Find companies looking for distributors, dealers, channel partners and suppliers",
+    type: "distributors"
+},
+
+startup: {
+    requirement:
+        "Find recently launched startups and new companies that may need technology, software or business services",
+    type: "startups"
+}
+
+};
+
+
+document.querySelectorAll(".profile").forEach(btn => {
+
+    btn.addEventListener("click", () => {
+
+        const profile = profiles[btn.dataset.profile];
+
+        document.getElementById("requirement")
+            .value = profile.requirement;
+
+        document.getElementById("opportunityType")
+            .value = profile.type;
+
+        generateQueries();
+
+    });
+
+});
+
+
+/* ---------------------------------------------------------
+   HELPERS
+--------------------------------------------------------- */
+
+function escapeHTML(str) {
+
+    return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+function addUnique(arr, value) {
+
+    value = value.trim();
+
+    if (value && !arr.includes(value)) {
+
+        arr.push(value);
+
+    }
+
+}
+
+
+/* ---------------------------------------------------------
+   TIME OPERATORS
+--------------------------------------------------------- */
+
+function getTimeOperators() {
+
+    const result = [];
+
+    if (state.time === "recent") {
+
+        result.push("after:2026-09-01");
+
+    }
+
+    if (state.time === "7") {
+
+        result.push("after:2026-09-05");
+
+    }
+
+    if (state.time === "30") {
+
+        result.push("after:2026-08-13");
+
+    }
+
+    if (state.time === "90") {
+
+        result.push("after:2026-06-14");
+
+    }
+
+    if (state.time === "custom") {
+
+        const from =
+            document.getElementById("dateFrom").value;
+
+        const to =
+            document.getElementById("dateTo").value;
+
+        if (from)
+            result.push(`after:${from}`);
+
+        if (to)
+            result.push(`before:${to}`);
+
+    }
+
+    return result.join(" ");
+
+}
+
+
+/* ---------------------------------------------------------
+   OPPORTUNITY KEYWORDS
+--------------------------------------------------------- */
+
+function getOpportunityKeywords(type) {
+
+const map = {
+
+general: [
+    "business opportunity",
+    "project",
+    "contract",
+    "requirement"
+],
+
+clients: [
+    "looking for",
+    "need",
+    "requirement",
+    "hire",
+    "outsource",
+    "vendor",
+    "agency"
+],
+
+tenders: [
+    "tender",
+    "e-tender",
+    "bid",
+    "procurement",
+    "notice inviting tender",
+    "NIT"
+],
+
+rfq: [
+    "RFQ",
+    "RFP",
+    "request for quotation",
+    "request for proposal",
+    "procurement"
+],
+
+export: [
+    "importer",
+    "buyer",
+    "distributor",
+    "wholesale buyer",
+    "procurement",
+    "sourcing"
+],
+
+importers: [
+    "importer",
+    "buying company",
+    "purchase requirement",
+    "sourcing"
+],
+
+distributors: [
+    "distributor wanted",
+    "dealer wanted",
+    "channel partner",
+    "distributorship",
+    "dealer network"
+],
+
+suppliers: [
+    "supplier",
+    "manufacturer",
+    "vendor",
+    "OEM",
+    "wholesale"
+],
+
+contracts: [
+    "contract",
+    "project",
+    "vendor",
+    "service provider",
+    "outsourcing"
+],
+
+startups: [
+    "startup",
+    "new company",
+    "launched",
+    "funded startup",
+    "newly incorporated"
+],
+
+freelance: [
+    "freelancer",
+    "freelance developer",
+    "contract developer",
+    "remote contractor",
+    "project requirement"
+],
+
+partnership: [
+    "partnership",
+    "strategic partner",
+    "technology partner",
+    "channel partner"
+]
+
+};
+
+return map[type] || map.general;
+
+}
+
+
+/* ---------------------------------------------------------
+   COUNTRY
+--------------------------------------------------------- */
+
+function getLocationTerms() {
+
+    const country =
+        document.getElementById("country").value;
+
+    const region =
+        document.getElementById("region").value.trim();
+
+    const result = [];
+
+    if (country)
+        result.push(`"${country}"`);
+
+    if (region)
+        result.push(`"${region}"`);
+
+    return result.join(" ");
+
+}
+
+
+/* ---------------------------------------------------------
+   GENERATOR
+--------------------------------------------------------- */
+
+function generateQueries() {
+
+    const requirement =
+        document.getElementById("requirement")
+        .value.trim();
+
+    if (!requirement) {
+
+        alert("Enter a business requirement first.");
+
+        return;
+
+    }
+
+    const type =
+        document.getElementById("opportunityType")
+        .value;
+
+    const domains =
+        document.getElementById("domains")
+        .value
+        .split(",")
+        .map(x => x.trim())
+        .filter(Boolean);
+
+    const exclude =
+        document.getElementById("exclude")
+        .value.trim();
+
+    const location =
+        getLocationTerms();
+
+    const time =
+        getTimeOperators();
+
+    const keywords =
+        getOpportunityKeywords(type);
+
+    const generated = [];
+
+
+    /* Base queries */
+
+    keywords.forEach(keyword => {
+
+        let query =
+            `"${keyword}" ${requirement}`;
+
+        if (location)
+            query += ` ${location}`;
+
+        if (time)
+            query += ` ${time}`;
+
+        if (exclude)
+            query += ` ${exclude}`;
+
+        addUnique(generated, query);
+
+    });
+
+
+    /* Domain queries */
+
+    domains.forEach(domain => {
+
+        keywords.slice(0, 5).forEach(keyword => {
+
+            let query =
+                `site:${domain} "${keyword}" ${requirement}`;
+
+            if (location)
+                query += ` ${location}`;
+
+            if (time)
+                query += ` ${time}`;
+
+            addUnique(generated, query);
+
+        });
+
+    });
+
+
+    /* Deep operators */
+
+    if (state.depth === "deep" ||
+        state.depth === "maximum") {
+
+        const deepPatterns = [
+
+            `"request for quotation" ${requirement}`,
+
+            `"request for proposal" ${requirement}`,
+
+            `"expression of interest" ${requirement}`,
+
+            `"invitation to bid" ${requirement}`,
+
+            `"vendor registration" ${requirement}`,
+
+            `"supplier registration" ${requirement}`,
+
+            `"empanelment" ${requirement}`,
+
+            `"pre qualification" ${requirement}`,
+
+            `"EOI" ${requirement}`,
+
+            `"RFP" ${requirement}`,
+
+            `"RFQ" ${requirement}`,
+
+            `"purchase requirement" ${requirement}`
+
+        ];
+
+
+        deepPatterns.forEach(query => {
+
+            if (location)
+                query += ` ${location}`;
+
+            if (time)
+                query += ` ${time}`;
+
+            addUnique(generated, query);
+
+        });
+
+    }
+
+
+    /* Maximum discovery */
+
+    if (state.depth === "maximum") {
+
+        const maxPatterns = [
+
+            `intitle:tender ${requirement}`,
+
+            `intitle:procurement ${requirement}`,
+
+            `intitle:RFP ${requirement}`,
+
+            `intitle:RFQ ${requirement}`,
+
+            `intitle:"request for proposal" ${requirement}`,
+
+            `intitle:"expression of interest" ${requirement}`,
+
+            `inurl:tender ${requirement}`,
+
+            `inurl:procurement ${requirement}`,
+
+            `inurl:rfp ${requirement}`,
+
+            `inurl:rfq ${requirement}`,
+
+            `filetype:pdf tender ${requirement}`,
+
+            `filetype:pdf RFP ${requirement}`,
+
+            `filetype:pdf RFQ ${requirement}`,
+
+            `filetype:xls supplier ${requirement}`,
+
+            `filetype:xlsx procurement ${requirement}`,
+
+            `"contact us" ${requirement}`,
+
+            `"send quotation" ${requirement}`,
+
+            `"submit quotation" ${requirement}`,
+
+            `"become a supplier" ${requirement}`,
+
+            `"become a distributor" ${requirement}`
+
+        ];
+
+
+        maxPatterns.forEach(query => {
+
+            if (location)
+                query += ` ${location}`;
+
+            if (time)
+                query += ` ${time}`;
+
+            if (exclude)
+                query += ` ${exclude}`;
+
+            addUnique(generated, query);
+
+        });
+
+    }
+
+
+    state.queries = generated;
+
+    renderResults();
+
+    runTerminal();
+
+}
+
+
+/* ---------------------------------------------------------
+   RESULT RENDERER
+--------------------------------------------------------- */
+
+function renderResults() {
+
+    const container =
+        document.getElementById("results");
+
+    container.innerHTML = "";
+
+    if (!state.queries.length) {
+
+        container.innerHTML = `
+        <div class="panel p-10 text-center">
+            NO RESULTS
+        </div>
+        `;
+
+        return;
+
+    }
+
+
+    state.queries.forEach((query, index) => {
+
+        const encoded =
+            encodeURIComponent(query);
+
+        const google =
+            `https://www.google.com/search?q=${encoded}`;
+
+        const bing =
+            `https://www.bing.com/search?q=${encoded}`;
+
+        const brave =
+            `https://search.brave.com/search?q=${encoded}`;
+
+        const duck =
+            `https://duckduckgo.com/?q=${encoded}`;
+
+
+        const html = `
+
+        <div class="panel command p-4">
+
+            <div class="flex flex-col md:flex-row justify-between gap-3">
+
+                <div class="text-[10px] text-green-800">
+                    QUERY_${String(index+1).padStart(3,"0")}
+                </div>
+
+                <div class="flex gap-2">
+
+                    <button
+                    class="cyber-btn px-2 py-1 text-[10px]"
+                    onclick="copyQuery(${index})">
+                    COPY
+                    </button>
+
+                    <a
+                    href="${google}"
+                    target="_blank"
+                    class="cyber-btn px-2 py-1 text-[10px]">
+                    GOOGLE
+                    </a>
+
+                    <a
+                    href="${bing}"
+                    target="_blank"
+                    class="cyber-btn px-2 py-1 text-[10px]">
+                    BING
+                    </a>
+
+                    <a
+                    href="${brave}"
+                    target="_blank"
+                    class="cyber-btn px-2 py-1 text-[10px]">
+                    BRAVE
+                    </a>
+
+                    <a
+                    href="${duck}"
+                    target="_blank"
+                    class="cyber-btn px-2 py-1 text-[10px]">
+                    DDG
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="mt-3 text-xs md:text-sm break-words text-green-300">
+
+                <span class="text-green-800">$</span>
+                ${escapeHTML(query)}
+
+            </div>
+
+        </div>
+
+        `;
+
+        container.insertAdjacentHTML("beforeend", html);
+
+    });
+
+
+    document.getElementById("resultCount")
+        .textContent = state.queries.length;
+
+    document.getElementById("statQueries")
+        .textContent = state.queries.length;
+
+    document.getElementById("statOperators")
+        .textContent =
+        state.queries.filter(q =>
+            q.includes("site:") ||
+            q.includes("intitle:") ||
+            q.includes("inurl:") ||
+            q.includes("filetype:")
+        ).length;
+
+}
+
+
+/* ---------------------------------------------------------
+   COPY
+--------------------------------------------------------- */
+
+function copyQuery(index) {
+
+    navigator.clipboard.writeText(
+        state.queries[index]
+    );
+
+}
+
+
+document.getElementById("copyAll")
+.addEventListener("click", () => {
+
+    if (!state.queries.length)
+        return;
+
+    navigator.clipboard.writeText(
+        state.queries.join("\n\n")
+    );
+
+});
+
+
+/* ---------------------------------------------------------
+   DOWNLOAD
+--------------------------------------------------------- */
+
+document.getElementById("downloadTxt")
+.addEventListener("click", () => {
+
+    if (!state.queries.length)
+        return;
+
+    const blob =
+        new Blob(
+            [state.queries.join("\n\n")],
+            {type: "text/plain"}
+        );
+
+    const url =
+        URL.createObjectURL(blob);
+
+    const a =
+        document.createElement("a");
+
+    a.href = url;
+    a.download =
+        "osint-business-queries.txt";
+
+    a.click();
+
+    URL.revokeObjectURL(url);
+
+});
+
+
+/* ---------------------------------------------------------
+   CLEAR
+--------------------------------------------------------- */
+
+document.getElementById("clearResults")
+.addEventListener("click", () => {
+
+    state.queries = [];
+
+    document.getElementById("results")
+        .innerHTML = `
+
+        <div class="panel p-10 text-center">
+
+            <div class="text-4xl mb-3 opacity-30">
+                ⌕
+            </div>
+
+            <div class="text-sm text-green-700">
+                INTELLIGENCE MATRIX CLEARED
+            </div>
+
+        </div>
+
+        `;
+
+    document.getElementById("resultCount")
+        .textContent = "0";
+
+    document.getElementById("statQueries")
+        .textContent = "0";
+
+});
+
+
+/* ---------------------------------------------------------
+   TERMINAL
+--------------------------------------------------------- */
+
+function runTerminal() {
+
+    const terminal =
+        document.getElementById("terminal");
+
+    terminal.innerHTML = "";
+
+    const messages = [
+
+        "Initializing intelligence engine...",
+
+        "Parsing target requirement...",
+
+        "Loading opportunity profile...",
+
+        "Building semantic keyword matrix...",
+
+        "Applying geographic filters...",
+
+        "Applying temporal intelligence...",
+
+        "Generating search operators...",
+
+        "Generating procurement patterns...",
+
+        "Generating public-web discovery queries...",
+
+        `Generated ${state.queries.length} query patterns.`,
+
+        "INTELLIGENCE GENERATION COMPLETE."
+
+    ];
+
+
+    let i = 0;
+
+
+    function next() {
+
+        if (i >= messages.length)
+            return;
+
+        const line =
+            document.createElement("div");
+
+        line.innerHTML =
+            `<span class="text-green-800">[${String(i+1).padStart(2,"0")}]</span> ${messages[i]}`;
+
+        terminal.appendChild(line);
+
+        terminal.scrollTop =
+            terminal.scrollHeight;
+
+        i++;
+
+        setTimeout(next, 100);
+
+    }
+
+    next();
+
+}
+
+
+/* ---------------------------------------------------------
+   GENERATE BUTTON
+--------------------------------------------------------- */
+
+document.getElementById("generateBtn")
+.addEventListener("click", generateQueries);
+
+
+/* ---------------------------------------------------------
+   KEYBOARD SHORTCUT
+--------------------------------------------------------- */
+
+document.getElementById("requirement")
+.addEventListener("keydown", e => {
+
+    if (
+        e.key === "Enter" &&
+        (e.ctrlKey || e.metaKey)
+    ) {
+
+        generateQueries();
+
+    }
+
+});
+
+
+/* ---------------------------------------------------------
+   DEMO STARTUP
+--------------------------------------------------------- */
+
+console.log(
+    "OSINT//HUNTER initialized. Public-web intelligence only."
+);
+
+</script>
+
+</body>
+</html>
+```
